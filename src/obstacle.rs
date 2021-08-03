@@ -3,7 +3,7 @@ use crate::state::*;
 use crate::player::Player;
 
 pub(crate) struct Obstacle {
-    x: i32,
+    pub(crate) x: i32,
     gap_y: i32,
     size: i32,
 }
@@ -13,15 +13,15 @@ impl Obstacle {
         let mut random = RandomNumberGenerator::new();
         Obstacle {
             x,
-            gap_y : random.range(10, 40),
-            size: i32::max(2,20 - score)
+            gap_y: random.range(10, 40),
+            size: i32::max(2, 20 - score),
         }
     }
 
-    fn is_obstacle_hit(&self, player: &Player) -> bool{
+    pub(crate) fn is_obstacle_hit(&self, player: &Player) -> bool {
         let same_x = player.x == self.x;
-        let bottom_obstacle = self.gap_y - self.size/2;
-        let top_obstacle = self.gap_y + self.size/2;
+        let bottom_obstacle = self.gap_y - self.size / 2;
+        let top_obstacle = self.gap_y + self.size / 2;
 
         let hit_top_obstacle = player.y >= top_obstacle;
         let hit_bottom_obstacle = player.y <= bottom_obstacle;
@@ -29,11 +29,12 @@ impl Obstacle {
         same_x && (hit_top_obstacle || hit_bottom_obstacle)
     }
 
-    fn render(&mut self, ctx: &mut BTerm){
-        let half_size = self.size/2;
+    pub(crate) fn render(&mut self, ctx: &mut BTerm, player_x: i32 ) {
+        let screen_x = self.x - player_x;
+        let half_size = self.size / 2;
         for y in 0..self.gap_y - half_size {
             ctx.set(
-                self.x,
+                screen_x,
                 y,
                 WHITE,
                 BLACK,
@@ -43,11 +44,11 @@ impl Obstacle {
 
         for y in self.gap_y + half_size..SCREEN_HEIGHT {
             ctx.set(
-                self.x,
+                screen_x,
                 y,
                 WHITE,
                 BLACK,
-                to_cp437('|')
+                to_cp437('|'),
             )
         }
     }

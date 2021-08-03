@@ -32,6 +32,8 @@ impl State {
         self.player = Player::new(BIRD_START_X, BIRD_START_Y);
         self.mode = GameMode::Playing;
         self.frame_time = 0.0;
+        self.obstacle = Obstacle::new(SCREEN_WIDTH, 0);
+        self.score = 0;
     }
 
     fn handle_game_over(&mut self){
@@ -52,8 +54,21 @@ impl State {
             self.player.flap();
         }
 
+        self.obstacle.render(ctx, self.player.x);
         self.player.render(ctx);
-        ctx.print_centered(0, "Press space to fly");
+
+        ctx.print(0,0, "Press space to fly");
+        ctx.print(0, 1, format!("Current score {}", self.score));
+
+        if self.player.x > self.obstacle.x {
+            self.score += 1;
+            self.obstacle = Obstacle::new(self.player.x + SCREEN_WIDTH, self.score);
+        }
+
+        if self.player.y > SCREEN_HEIGHT || self.obstacle.is_obstacle_hit(&self.player){
+            self.mode = GameMode::End;
+        }
+
         self.handle_game_over();
     }
 
@@ -76,6 +91,7 @@ impl State {
     pub(crate) fn game_over(&mut self, ctx: &mut BTerm) {
         ctx.cls();
         ctx.print_centered(5, "Game Over!");
+        ctx.print_centered(7, format!("Score: {}", self.score));
         ctx.print_centered(15, "Play (P)");
         ctx.print_centered(17, "Exit (E)");
 
