@@ -1,6 +1,7 @@
 use bracket_lib::prelude::*;
 use crate::player::Player;
 use crate::game_mode::GameMode;
+use crate::obstacle::Obstacle;
 
 const SCREEN_WIDTH: i32 = 80;
 pub const SCREEN_HEIGHT: i32 = 50;
@@ -12,7 +13,8 @@ pub(crate) struct State {
     player: Player,
     pub(crate) mode: GameMode,
     frame_time: f32,
-
+    score: i32,
+    obstacle: Obstacle,
 }
 
 impl State {
@@ -21,6 +23,8 @@ impl State {
             player: Player::new(BIRD_START_X, BIRD_START_Y),
             mode: GameMode::Menu,
             frame_time: 0.0,
+            score: 0,
+            obstacle: Obstacle::new(SCREEN_WIDTH, 0),
         }
     }
 

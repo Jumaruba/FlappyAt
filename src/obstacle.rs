@@ -9,7 +9,7 @@ pub(crate) struct Obstacle {
 }
 
 impl Obstacle {
-    fn new(x: i32, score: i32) -> Self {
+    pub(crate) fn new(x: i32, score: i32) -> Self {
         let mut random = RandomNumberGenerator::new();
         Obstacle {
             x,
